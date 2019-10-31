@@ -45,7 +45,7 @@ public func XCTAssertEqualDictionaries(item:[String:Any],
 }
 
 /// Get around lack of resource management in SPM
-func getTestResourceDirectory() -> URL {
+public func getTestResourceDirectory() -> URL {
     let thisSourceFile = URL(fileURLWithPath: #file)
     return thisSourceFile
         .deletingLastPathComponent()
