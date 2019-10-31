@@ -7,7 +7,7 @@
 //
 import Foundation
 
-extension Dictionary where Key:Comparable {
+public extension Dictionary where Key:Comparable {
     func toSortedArray() -> [(Key,Value)] {
         return Array(self).sorted { $0.0 < $1.0 }
     }
