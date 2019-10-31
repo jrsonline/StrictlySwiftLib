@@ -31,6 +31,14 @@ public extension Optional {
     func isNil() -> Bool {
         return !isNonNil()
     }
+    
+    /// If both are nil, return nil. If A is nil, return f(B!).  If B is nil, return f(A!). If A and B are both non-nil, return g(A,B)
+    func combine<T,S>( a: T?, b: T?, f:(T)->S, g:(T,T)->S) -> S? {
+        if a == nil && b == nil { return nil }
+        if a == nil && b != nil { return f(b!) }
+        if b == nil && a != nil { return f(a!) }
+        return g(a!,b!)
+    }
 }
 
 infix operator !!
