@@ -40,4 +40,13 @@ public extension Date {
         }
     }
     
+    func to_yyyyMMdd() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.dateFormat = "yyyyMMdd"
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+
+        return dateFormatter.string(from: self)
+    }
+    
 }

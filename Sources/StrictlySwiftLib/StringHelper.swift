@@ -22,6 +22,11 @@ public extension String {
             return self.suffix(0)
         }
     }
+    
+    func trimLeadingTrailingWhitespace() -> String {
+        return self.trimmingCharacters(in: CharacterSet.whitespaces)
+    }
+
 }
 
 public extension String {
