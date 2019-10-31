@@ -32,12 +32,14 @@ public extension Optional {
         return !isNonNil()
     }
     
-    /// If both are nil, return nil. If A is nil, return f(B!).  If B is nil, return f(A!). If A and B are both non-nil, return g(A,B)
-    func combine<T,S>( a: T?, b: T?, f:(T)->S, g:(T,T)->S) -> S? {
-        if a == nil && b == nil { return nil }
-        if a == nil && b != nil { return f(b!) }
-        if b == nil && a != nil { return f(a!) }
-        return g(a!,b!)
+    /// If self and B are nil, return nil. If self is nil, return f(B!).  If B is nil, return f(self!). If self and B are both non-nil, return g(self,B)
+    func combine<S>( b: Wrapped?, f:(Wrapped)->S, g:(Wrapped,Wrapped)->S) -> S? {
+        switch (self, b) {
+        case (.none, .none): return nil
+        case (.none, .some(let bb)): return f(bb)
+        case (.some(let aa), .none): return f(aa)
+        case (.some(let aa), .some(let bb)): return g(aa,bb)
+        }
     }
 }
 
