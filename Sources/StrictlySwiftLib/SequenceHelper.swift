@@ -7,10 +7,10 @@
 
 import Foundation
 
-func forever<A>(_ a:A) -> AnySequence<A> {
-        return AnySequence { () -> AnyIterator<A> in
-            return AnyIterator {
-                a
-            }
+public func forever<A>(_ a:A) -> AnySequence<A> {
+    return AnySequence { () -> AnyIterator<A> in
+        return AnyIterator {
+            a
         }
     }
+}
