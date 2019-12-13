@@ -67,7 +67,7 @@ public func getTestResourceDirectory(file: StaticString = #file) -> URL {
 ///     XCTAssertEqual(resultC1, true) // able to create table successfully
 ///
 @available(OSX 10.15, *)
-func XCTWaitForPublisherResult<T, P>(timeout: Double = 5, file: StaticString = #file, line: UInt = #line, publisher: () -> P) -> T? where P:Publisher, P.Output == T {
+public func XCTWaitForPublisherResult<T, P>(timeout: Double = 5, file: StaticString = #file, line: UInt = #line, publisher: () -> P) -> T? where P:Publisher, P.Output == T {
     let exp = XCTestExpectation(description: "expect")
     
     var result: T?

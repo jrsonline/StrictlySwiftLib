@@ -141,7 +141,7 @@ struct FutureScheduler : Scheduler {
 @available(OSX 10.15, *)
 extension Publisher {
     /// logs events to NSLog
-    func log(_ amLogging: Bool, prefix: String = "Publisher", log: @escaping (Output) -> String) -> Publishers.HandleEvents<Self> {
+    public func log(_ amLogging: Bool, prefix: String = "Publisher", log: @escaping (Output) -> String) -> Publishers.HandleEvents<Self> {
         if amLogging {
             return self.handleEvents( receiveOutput: { output in NSLog("\(prefix): \(log(output))") },
                                       receiveCompletion: {c in NSLog("\(prefix): Completed \(c)")},
