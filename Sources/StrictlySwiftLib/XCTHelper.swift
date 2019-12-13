@@ -6,6 +6,7 @@
 
 import Foundation
 import XCTest
+import Combine
 
 public func XCTAssertEqualArrays<T>(_ first: [T],
                                     _ second: [T],
@@ -57,4 +58,40 @@ public func getTestResourceDirectory(file: StaticString = #file) -> URL {
         .appendingPathComponent("Resources")
 }
 
-
+/// Function to use in tests which waits for output from a given publisher; returning the output if any before
+/// the timeout.
+///
+///     let result = XCTWaitForPublisherResult() {
+///          Dyno().createTableWaitActive(name: TEST_TABLE, partitionKeyField: ("id",.string) )
+///     }
+///     XCTAssertEqual(resultC1, true) // able to create table successfully
+///
+@available(OSX 10.15, *)
+func XCTWaitForPublisherResult<T, P>(timeout: Double = 5, file: StaticString = #file, line: UInt = #line, publisher: () -> P) -> T? where P:Publisher, P.Output == T {
+    let exp = XCTestExpectation(description: "expect")
+    
+    var result: T?
+    let cancellable = publisher()
+        .sink(
+            receiveCompletion: { outcome in
+                switch outcome {
+                case .failure(let e): XCTFail("Failed with \(e)", file:file, line:line)
+                case .finished:exp.fulfill()
+                } },
+            receiveValue: { value in result = value })
+    
+    let outcome = XCTWaiter.wait(for: [exp], timeout: timeout)
+    
+    switch outcome {
+    case .completed:
+        return result
+    case .timedOut:
+        XCTFail("XCTWaitForPublisherResult failed to get publisher result before timeout of \(timeout) seconds", file:file, line:line)
+    default:
+        XCTFail("XCTWaitForPublisherResult failed with error", file:file, line:line)
+    }
+    
+    NSLog("Cancellable is \(cancellable)")  //  ???
+    
+    return result
+}
