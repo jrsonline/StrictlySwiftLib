@@ -8,7 +8,7 @@
 import Foundation
 
 extension KeyedDecodingContainer {
-    public func mapIfContains<D>(_ key:K, f:(K) throws -> D) rethrows -> D?  {
+    func mapIfContains<D>(_ key:K, f:(K) throws -> D) rethrows -> D?  {
         if self.contains(key) {
             return try f(key)
         } else {

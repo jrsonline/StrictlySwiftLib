@@ -95,3 +95,38 @@ public func XCTWaitForPublisherResult<T, P>(timeout: Double = 5, file: StaticStr
     
     return result
 }
+
+
+/// Similar to `XCTWaitForPublisherResult`, but expects to receive a failure in the given timeframe.
+@available(OSX 10.15, *)
+public func XCTWaitForPublisherFailure<T, P>(timeout: Double = 5, file: StaticString = #file, line: UInt = #line, publisher: () -> P) -> P.Failure? where P:Publisher, P.Output == T {
+    let exp = XCTestExpectation(description: "expect")
+    
+    var failure: P.Failure?
+    let cancellable = publisher()
+        .sink(
+            receiveCompletion: { outcome in
+                switch outcome {
+                case .failure(let e):
+                    failure = e
+                    exp.fulfill()
+                case .finished:
+                    exp.fulfill()
+                } },
+            receiveValue: { _ in })
+    
+    let waitOutcome = XCTWaiter.wait(for: [exp], timeout: timeout)
+    
+    switch waitOutcome {
+    case .completed:
+        return failure
+    case .timedOut:
+        XCTFail("XCTWaitForPublisherFailure failed to get publisher failure before timeout of \(timeout) seconds", file:file, line:line)
+    default:
+        XCTFail("XCTWaitForPublisherFailure didn't get expected error", file:file, line:line)
+    }
+    
+    NSLog("Cancellable is \(cancellable)")  //  ???
+    
+    return failure
+}
