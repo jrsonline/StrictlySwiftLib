@@ -119,7 +119,7 @@ public func XCTWaitForPublisherFailure<T, P>(timeout: Double = 5, file: StaticSt
     
     switch waitOutcome {
     case .completed:
-        return failure
+        return XCTFail("XCTWaitForPublisherFailure: unexpectedly completed, expected to fail", file:file, line:line)
     case .timedOut:
         XCTFail("XCTWaitForPublisherFailure failed to get publisher failure before timeout of \(timeout) seconds", file:file, line:line)
     default:
