@@ -138,7 +138,7 @@ struct FutureScheduler : Scheduler {
 }
 
 
-@available(OSX 10.15, *)
+@available(iOS 13.0, OSX 10.15, *)
 extension Publisher {
     /// logs events to NSLog
     public func log(_ amLogging: Bool, prefix: String = "Publisher", log: @escaping (Output) -> String) -> Publishers.HandleEvents<Self> {
