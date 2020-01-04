@@ -7,45 +7,6 @@
 import Foundation
 import Combine
 
-@available(iOS 13.0, macOS 15.0, *)
-public extension Publisher {
-    func toBlockingResult(timeout: Int) -> Result<[Self.Output],BlockingError> {
-        var result : Result<[Self.Output],BlockingError>?
-        let semaphore = DispatchSemaphore(value: 0)
-        
-        let sub = self
-            .collect()
-            .mapError { error in BlockingError.otherError(error) }
-            .timeout(
-                .seconds(timeout),
-                scheduler: DispatchQueue.main,
-                customError: { BlockingError.timeoutError(timeout) }
-            )
-            .sink(
-                receiveCompletion: { compl in
-                    switch compl {
-                    case .finished: break
-                    case .failure( let f ): result = .failure(f)
-                    }
-                    semaphore.signal()
-            },
-                receiveValue: { value in
-                    result = .success(value)
-                    semaphore.signal()
-            }
-        )
-        
-        // Wait for a result, or time out
-        if semaphore.wait(timeout: .now() + .seconds(timeout)) == .timedOut {
-            sub.cancel()
-            return .failure(BlockingError.timeoutError(timeout))
-        } else {
-            return result ?? .success([])
-        }
-    }
-}
-
-
 struct NSLoggerStream : TextOutputStream {
     mutating func write(_ string: String) {
         guard string.count > 0 && string != "\n" else { return }
