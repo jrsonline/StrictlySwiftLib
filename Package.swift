@@ -22,8 +22,8 @@ let package = Package(
         .target(
             name: "StrictlySwiftLib",
             dependencies: []),
-        .testTarget(
-            name: "StrictlySwiftLibTests",
-            dependencies: ["StrictlySwiftLib"]),
+//        .testTarget(
+//            name: "StrictlySwiftLibTests",
+//            dependencies: ["StrictlySwiftLib"]),
     ]
 )
